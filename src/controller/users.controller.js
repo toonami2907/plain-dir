@@ -16,6 +16,10 @@ export const getDashboard = async (req, res) => {
 
     res.json({
       projects,
+      user: {
+        name: req.user.name,
+        email: req.user.email
+      },
       comments: comments.map(comment => ({
         text: comment.text,
         projectTitle: comment.projectId.title,
