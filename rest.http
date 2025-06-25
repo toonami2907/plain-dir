@@ -1,0 +1,13 @@
+
+### Send request to localhost:3000
+GET http://localhost:5000/
+
+### Send request to localhost:3000
+POST http://localhost:5000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+    "name": "test",
+    "email": "test@test.com",
+    "password": "Danbrown@2004"
+}
