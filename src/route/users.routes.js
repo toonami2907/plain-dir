@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/dashboard', Auth, getDashboard);
 router.get('/:id', Auth, getUserById);
-router.patch('/profile', auth, [
+router.patch('/profile', Auth, [
     body('name').optional().trim().notEmpty().isLength({ max: 50 }).customSanitizer(value => sanitizeHtml(value)),
     body('email').optional().isEmail().normalizeEmail()
   ], updateProfile);
