@@ -32,7 +32,7 @@ export const createProject = async (req, res) => {
       driveLink,
       coverImage,
       createdBy: req.user._id,
-      tags: req.body.tags ? JSON.parse(req.body.tags) : [],
+      tags: Array.isArray(req.body.tags) ? req.body.tags : [],
     });
 
     await project.save();

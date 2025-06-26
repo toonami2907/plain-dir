@@ -5,6 +5,17 @@ import { body } from 'express-validator';
 import sanitizeHtml from 'sanitize-html';
 import multer from 'multer';
 
+const parseTags = (req, res, next) => {
+  if (req.body.tags && typeof req.body.tags === 'string') {
+    try {
+      req.body.tags = JSON.parse(req.body.tags);
+    } catch (error) {
+      return res.status(400).json({ errors: [{ msg: 'Invalid tags format', path: 'tags' }] });
+    }
+  }
+  next();
+};
+
 const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
@@ -17,7 +28,7 @@ const upload = multer({
 
 const router = express.Router();
 
-router.post('/', Auth, upload.single('coverImage'), [
+router.post('/', Auth, upload.single('coverImage'),parseTags, [
   body('title').trim().notEmpty().isLength({ max: 100 }).customSanitizer(value => sanitizeHtml(value)),
   body('description').trim().notEmpty().isLength({ max: 2000 }).customSanitizer(value => sanitizeHtml(value)),
   body('status').isIn(['Ongoing', 'Need Help', 'Looking for Collaborators']),
