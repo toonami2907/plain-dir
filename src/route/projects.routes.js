@@ -5,16 +5,7 @@ import { body } from 'express-validator';
 import sanitizeHtml from 'sanitize-html';
 import multer from 'multer';
 
-const parseTags = (req, res, next) => {
-  if (req.body.tags && typeof req.body.tags === 'string') {
-    try {
-      req.body.tags = JSON.parse(req.body.tags);
-    } catch (error) {
-      return res.status(400).json({ errors: [{ msg: 'Invalid tags format', path: 'tags' }] });
-    }
-  }
-  next();
-};
+
 
 const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
@@ -34,8 +25,7 @@ router.post('/', Auth, upload.single('coverImage'),parseTags, [
   body('status').isIn(['Ongoing', 'Need Help', 'Looking for Collaborators']),
   body('githubLink').optional().isURL().matches(/^https?:\/\/(www\.)?github\.com\/.+$/),
   body('driveLink').optional().isURL().matches(/^https?:\/\/(www\.)?(drive\.google\.com|docs\.google\.com)\/.+$/),
-  body('tags').optional().isArray(),
-  body('tags.*').trim().isLength({ max: 50 }),
+  body('tags').optional().isArray()
 ], createProject);
 
 router.get('/', getProjects);
