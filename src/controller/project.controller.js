@@ -23,7 +23,7 @@ export const createProject = async (req, res) => {
       coverImage = result.secure_url;
     }
 
-    const { title, description, status, githubLink, driveLink, tag} = req.body;
+    const { title, description, status, githubLink, driveLink} = req.body;
     const project = new Project({
       title,
       description,
@@ -32,7 +32,7 @@ export const createProject = async (req, res) => {
       driveLink,
       coverImage,
       createdBy: req.user._id,
-      tags: tag.split(',').map(tag => tag.trim())
+      tags: req.body.tags ? JSON.parse(req.body.tags) : [],
     });
 
     await project.save();
