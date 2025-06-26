@@ -6,8 +6,6 @@ import { validationResult } from "express-validator";
 import { Project } from "../model/project.model.js";
 import { Comment } from "../model/comment.model.js";
 
-// const winston = require('winston');
-Project 
 
 export const createProject = async (req, res) => {
   try {
@@ -25,7 +23,7 @@ export const createProject = async (req, res) => {
       coverImage = result.secure_url;
     }
 
-    const { title, description, status, githubLink, driveLink } = req.body;
+    const { title, description, status, githubLink, driveLink, tag} = req.body;
     const project = new Project({
       title,
       description,
@@ -33,7 +31,8 @@ export const createProject = async (req, res) => {
       githubLink,
       driveLink,
       coverImage,
-      createdBy: req.user._id
+      createdBy: req.user._id,
+      tags: tag.split(',').map(tag => tag.trim())
     });
 
     await project.save();
@@ -141,6 +140,24 @@ export const getComments = async (req, res) => {
     res.json(comments);
   } catch (error) {
     winston.error(`Get comments error: ${error.message}`);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const incrementViews = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    project.views += 1;
+    await project.save();
+
+    res.json(project);
+    winston.info(`View incremented for project ${project.title}`);
+  } catch (error) {
+    winston.error(`Increment views error: ${error.message}`);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

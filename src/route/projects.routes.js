@@ -1,6 +1,6 @@
 import express from 'express';
 import { Auth } from '../middleware/auth.mid.js';
-import { createProject, getProjects, toggleLike, addComment, getComments } from '../controller/project.controller.js';
+import { createProject, getProjects, toggleLike, addComment, getComments, incrementViews } from '../controller/project.controller.js';
 import { body } from 'express-validator';
 import sanitizeHtml from 'sanitize-html';
 import multer from 'multer';
@@ -22,7 +22,9 @@ router.post('/', Auth, upload.single('coverImage'), [
   body('description').trim().notEmpty().isLength({ max: 2000 }).customSanitizer(value => sanitizeHtml(value)),
   body('status').isIn(['Ongoing', 'Need Help', 'Looking for Collaborators']),
   body('githubLink').optional().isURL().matches(/^https?:\/\/(www\.)?github\.com\/.+$/),
-  body('driveLink').optional().isURL().matches(/^https?:\/\/(www\.)?(drive\.google\.com|docs\.google\.com)\/.+$/)
+  body('driveLink').optional().isURL().matches(/^https?:\/\/(www\.)?(drive\.google\.com|docs\.google\.com)\/.+$/),
+  body('tags').optional().isArray(),
+  body('tags.*').trim().isLength({ max: 50 }),
 ], createProject);
 
 router.get('/', getProjects);
@@ -31,5 +33,6 @@ router.post('/:id/comments', Auth, [
   body('text').trim().notEmpty().isLength({ max: 500 }).customSanitizer(value => sanitizeHtml(value))
 ], addComment);
 router.get('/:id/comments', getComments);
+router.post('/:id/views', incrementViews);
 
 export default router;
