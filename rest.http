@@ -24,25 +24,25 @@ Content-Type: application/json
 ### Create a new project (JSON, no coverImage)
 POST http://localhost:5000/api/v1/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4MTUwMywiZXhwIjoxNzUwOTg1MTAzfQ.UyUohrcEnmKKeCy6Fg6orfCz_q-f2wDY7c7O4SLeoh0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4NDU0OSwiZXhwIjoxNzUwOTg4MTQ5fQ.mIrair3WbP_xHdyqFwtRGstHRf1KFuMIpVnuLHrZTQ8
 
 {
     "title": "Sample Project",
     "description": "This is a sample project to test the createProject endpoint.",
     "status": "Ongoing",
     "githubLink": "https://github.com/test/sample-project",
-    "tags": ["React", "Node.js", "TypeScript"]
+    "tags": "[\"Node.js\",\"React\",\"TypeScript\",\"Python\"]"
 }
 
 ###
 POST http://localhost:5000/api/v1/projects/685c93893bc3ce8352d91724/views/685c6dbcc81a11e82a07dd6a
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4MTUwMywiZXhwIjoxNzUwOTg1MTAzfQ.UyUohrcEnmKKeCy6Fg6orfCz_q-f2wDY7c7O4SLeoh0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4NDU0OSwiZXhwIjoxNzUwOTg4MTQ5fQ.mIrair3WbP_xHdyqFwtRGstHRf1KFuMIpVnuLHrZTQ8
 
 {
-    "title": "Sample Project",
+    "title": "Sample Project 3",
     "description": "This is a sample project to test the createProject endpoint.",
     "status": "Ongoing",
     "githubLink": "https://github.com/test/sample-project",
-    "tags": ["React", "Node.js", "TypeScript"]
+    "tags": "[\"Node.js\",\"React\",\"TypeScript\",\"Python\"]"
 }

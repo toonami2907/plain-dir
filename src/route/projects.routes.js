@@ -25,12 +25,27 @@ router.post('/', Auth, upload.single('coverImage'), [
   body('status').isIn(['Ongoing', 'Need Help', 'Looking for Collaborators']),
   body('githubLink').optional().isURL().matches(/^https?:\/\/(www\.)?github\.com\/.+$/),
   body('driveLink').optional().isURL().matches(/^https?:\/\/(www\.)?(drive\.google\.com|docs\.google\.com)\/.+$/),
-  body('tags').optional().isArray().custom((tags) => {
-    if (!tags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
+  body('tags').optional().custom((tags, { req }) => {
+    // If tags is undefined or empty, allow it since it's optional
+    if (!tags) return true;
+
+    let parsedTags;
+    try {
+      // Parse tags if it's a string (from FormData)
+      parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+    } catch (error) {
+      throw new Error('Invalid tags format: must be a valid JSON array');
+    }
+
+    // Check if parsedTags is an array of non-empty strings
+    if (!Array.isArray(parsedTags) || !parsedTags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
       throw new Error('Tags must be an array of non-empty strings');
     }
+
+    // Store parsed tags in req.body for the controller to use
+    req.body.tags = parsedTags;
     return true;
-  })
+  }),
 ], createProject);
 
 router.get('/', getProjects);

@@ -29,10 +29,14 @@ export const createProject = async (req, res) => {
     const { title, description, status, githubLink, driveLink, tags } = req.body;
 
     // Parse tags if sent as a JSON string
-    let parsedTags = tags;
-    if (typeof tags === 'string') {
+    let parsedTags = [];
+    if (tags) {
       try {
-        parsedTags = JSON.parse(tags);
+        parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+        // Validate that parsedTags is an array of non-empty strings
+        if (!Array.isArray(parsedTags) || !parsedTags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
+          return res.status(400).json({ error: 'Tags must be an array of non-empty strings' });
+        }
       } catch (error) {
         return res.status(400).json({ error: 'Invalid tags format' });
       }
@@ -46,7 +50,7 @@ export const createProject = async (req, res) => {
       driveLink,
       coverImage,
       createdBy: req.user._id,
-      tags: parsedTags || [], // Ensure tags is an array
+      tags: parsedTags, // Save the parsed array
     });
 
     await project.save();
