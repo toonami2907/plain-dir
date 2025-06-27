@@ -58,13 +58,16 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
+  Viewers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   views: {
     type: Number,
     default: 0,
   },
   tags: [{
     type: String,
-    trim: true,
     maxlength: [50, 'Tag cannot exceed 50 characters'],
   }],
 }, {

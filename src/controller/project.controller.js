@@ -21,12 +21,23 @@ export const createProject = async (req, res) => {
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: 'project_covers',
-        allowed_formats: ['jpg', 'png', 'jpeg']
+        allowed_formats: ['jpg', 'png', 'jpeg'],
       });
       coverImage = result.secure_url;
     }
 
     const { title, description, status, githubLink, driveLink, tags } = req.body;
+
+    // Parse tags if sent as a JSON string
+    let parsedTags = tags;
+    if (typeof tags === 'string') {
+      try {
+        parsedTags = JSON.parse(tags);
+      } catch (error) {
+        return res.status(400).json({ error: 'Invalid tags format' });
+      }
+    }
+
     const project = new Project({
       title,
       description,
@@ -35,7 +46,7 @@ export const createProject = async (req, res) => {
       driveLink,
       coverImage,
       createdBy: req.user._id,
-      tags,
+      tags: parsedTags || [], // Ensure tags is an array
     });
 
     await project.save();
@@ -149,12 +160,17 @@ export const getComments = async (req, res) => {
 
 export const incrementViews = async (req, res) => {
   try {
+    const loggedInUser = req.user._id;
+    const viewedUser = req.params.userId;
     const project = await Project.findById(req.params.id);
     if (!project) {
       return res.status(404).json({ error: 'Project not found' });
     }
-
+    if (project.Viewers.includes(viewedUser)) {
+      return res.status(200).json({ error: 'You have already viewed this project' });
+    }
     project.views += 1;
+    project.Viewers.push(loggedInUser);
     await project.save();
 
     res.json(project);

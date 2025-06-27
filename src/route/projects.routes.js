@@ -25,7 +25,12 @@ router.post('/', Auth, upload.single('coverImage'), [
   body('status').isIn(['Ongoing', 'Need Help', 'Looking for Collaborators']),
   body('githubLink').optional().isURL().matches(/^https?:\/\/(www\.)?github\.com\/.+$/),
   body('driveLink').optional().isURL().matches(/^https?:\/\/(www\.)?(drive\.google\.com|docs\.google\.com)\/.+$/),
-  body('tags').optional().isArray()
+  body('tags').optional().isArray().custom((tags) => {
+    if (!tags.every(tag => typeof tag === 'string' && tag.trim().length > 0)) {
+      throw new Error('Tags must be an array of non-empty strings');
+    }
+    return true;
+  })
 ], createProject);
 
 router.get('/', getProjects);
@@ -34,6 +39,6 @@ router.post('/:id/comments', Auth, [
   body('text').trim().notEmpty().isLength({ max: 500 }).customSanitizer(value => sanitizeHtml(value))
 ], addComment);
 router.get('/:id/comments', getComments);
-router.post('/:id/views', incrementViews);
+router.post('/:id/views/:userId',Auth, incrementViews);
 
 export default router;

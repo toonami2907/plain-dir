@@ -1,8 +1,12 @@
+# REST Client file for testing signup and createProject endpoints with JSON
 
-### Send request to localhost:3000
+### Test server status
 GET http://localhost:5000/
+Content-Type: application/json
 
-### Send request to localhost:3000
+###
+
+### Signup to get Bearer token
 POST http://localhost:5000/api/v1/auth/signup
 Content-Type: application/json
 
@@ -10,4 +14,35 @@ Content-Type: application/json
     "name": "test",
     "email": "test@test.com",
     "password": "Danbrown@2004"
+}
+
+# Save the token from the response (e.g., { "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." })
+# Replace {{token}} below with the actual token
+
+###
+
+### Create a new project (JSON, no coverImage)
+POST http://localhost:5000/api/v1/projects
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4MTUwMywiZXhwIjoxNzUwOTg1MTAzfQ.UyUohrcEnmKKeCy6Fg6orfCz_q-f2wDY7c7O4SLeoh0
+
+{
+    "title": "Sample Project",
+    "description": "This is a sample project to test the createProject endpoint.",
+    "status": "Ongoing",
+    "githubLink": "https://github.com/test/sample-project",
+    "tags": ["React", "Node.js", "TypeScript"]
+}
+
+###
+POST http://localhost:5000/api/v1/projects/685c93893bc3ce8352d91724/views/685c6dbcc81a11e82a07dd6a
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWM2ZGJjYzgxYTExZTgyYTA3ZGQ2YSIsImlhdCI6MTc1MDk4MTUwMywiZXhwIjoxNzUwOTg1MTAzfQ.UyUohrcEnmKKeCy6Fg6orfCz_q-f2wDY7c7O4SLeoh0
+
+{
+    "title": "Sample Project",
+    "description": "This is a sample project to test the createProject endpoint.",
+    "status": "Ongoing",
+    "githubLink": "https://github.com/test/sample-project",
+    "tags": ["React", "Node.js", "TypeScript"]
 }
